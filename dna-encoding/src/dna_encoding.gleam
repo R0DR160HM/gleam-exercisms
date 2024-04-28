@@ -53,7 +53,8 @@ fn decode_inner(
     <<current:2, rest:bits>> -> {
       current
       |> decode_nucleotide
-      |> result.try(fn(nuc) { decode_inner(rest, list.append(decoded, [nuc])) })
+      |> result.map(fn(nuc) { list.append(decoded, [nuc]) })
+      |> result.try(decode_inner(rest, _))
     }
     <<>> -> Ok(decoded)
     _ -> Error(Nil)
