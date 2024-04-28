@@ -1,4 +1,5 @@
 import gleam/list
+import gleam/result
 
 pub type Nucleotide {
   Adenine
@@ -50,12 +51,9 @@ fn decode_inner(
 ) -> Result(List(Nucleotide), Nil) {
   case dna {
     <<current:2, rest:bits>> -> {
-      case decode_nucleotide(current) {
-        Ok(nuc) -> {
-          decode_inner(rest, list.append(decoded, [nuc]))
-        }
-        Error(_) -> Error(Nil)
-      }
+      current
+      |> decode_nucleotide
+      |> result.try(fn(nuc) { decode_inner(rest, list.append(decoded, [nuc])) })
     }
     <<>> -> Ok(decoded)
     _ -> Error(Nil)
