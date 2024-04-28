@@ -1,4 +1,3 @@
-import gleam/io
 import gleam/list
 import gleam/result
 import gleam/string
@@ -17,17 +16,13 @@ pub fn read_emails(path: String) -> Result(List(String), Nil) {
 }
 
 pub fn create_log_file(path: String) -> Result(Nil, Nil) {
-  case simplifile.create_file(path) {
-    Ok(_) -> Ok(Nil)
-    Error(_) -> Error(Nil)
-  }
+  simplifile.create_file(path)
+  |> result.nil_error
 }
 
 pub fn log_sent_email(path: String, email: String) -> Result(Nil, Nil) {
-  case simplifile.append(email <> "\n", to: path) {
-    Ok(_) -> Ok(Nil)
-    Error(_) -> Error(Nil)
-  }
+  simplifile.append(email <> "\n", to: path)
+  |> result.nil_error
 }
 
 pub fn send_newsletter(
@@ -46,7 +41,6 @@ fn try_sending_email(
   send_email: fn(String) -> Result(Nil, Nil),
   log_path: String,
 ) -> Result(Nil, Nil) {
-  io.debug(emails)
   case emails {
     [current, ..rest] -> {
       let res = case send_email(current) {
