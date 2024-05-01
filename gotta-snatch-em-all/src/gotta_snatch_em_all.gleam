@@ -46,9 +46,19 @@ pub fn boring_cards(collections: List(Set(String))) -> List(String) {
 }
 
 pub fn total_cards(collections: List(Set(String))) -> Int {
-  todo
+  case collections {
+    [current, next, ..rest] -> total_cards([set.union(current, next), ..rest])
+    [final] -> set.size(final)
+    [] -> 0
+  }
 }
 
 pub fn shiny_cards(collection: Set(String)) -> Set(String) {
-  todo
+  collection
+  |> set.filter(fn(card) {
+    case card {
+      "Shiny " <> _ -> True
+      _ -> False
+    }
+  })
 }
